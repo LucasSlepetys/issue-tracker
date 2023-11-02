@@ -12,10 +12,11 @@ import ErrorCallout from '@/app/components/ErrorCallout';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Loading from '@/app/components/Loading';
+import delay from 'delay';
 
 type IssueForm = z.infer<typeof issueSchema>;
 
-const NewIssue = () => {
+const NewIssue = async () => {
   const {
     register,
     control,
@@ -41,7 +42,7 @@ const NewIssue = () => {
 
   return (
     <form
-      className='max-w-lg ml-8 space-y-4'
+      className='max-w-lg ml-8 space-y-4 mr-4'
       onSubmit={handleSubmit((data: IssueForm) => createNewIssue(data))}
     >
       <ErrorCallout>{error}</ErrorCallout>

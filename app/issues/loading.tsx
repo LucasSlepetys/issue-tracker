@@ -1,14 +1,13 @@
-import { Actions } from './actions';
-import { Table } from '@radix-ui/themes';
-import axios from 'axios';
 import { Issue } from '@prisma/client';
-import StatusComponent from '../components/Status';
-import delay from 'delay';
+import { Table } from '@radix-ui/themes';
+import React from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
-const Issues = async () => {
-  const {
-    data: { issues },
-  } = await axios.get('http://localhost:3000/api/issues');
+import { Actions } from './actions';
+
+const loading = () => {
+  const issues = [1, 2, 3, 4, 5, 6];
 
   return (
     <div className='m-4'>
@@ -26,21 +25,17 @@ const Issues = async () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {issues.map((issue: Issue) => {
-            const dt = new Date(issue.createdAt);
+          {issues.map((issue) => {
             return (
-              <Table.Row key={issue.id}>
+              <Table.Row key={issue}>
                 <Table.RowHeaderCell>
-                  {issue.title}
-                  <p className='mt-2 md:hidden'>
-                    {<StatusComponent status={issue.status} />}
-                  </p>
+                  <Skeleton />
                 </Table.RowHeaderCell>
                 <Table.Cell className='hidden md:table-cell'>
-                  <StatusComponent status={issue.status} />
+                  <Skeleton />
                 </Table.Cell>
                 <Table.Cell className='hidden md:table-cell'>
-                  {dt.toDateString()}
+                  <Skeleton />
                 </Table.Cell>
               </Table.Row>
             );
@@ -51,4 +46,4 @@ const Issues = async () => {
   );
 };
 
-export default Issues;
+export default loading;

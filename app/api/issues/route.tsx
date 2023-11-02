@@ -2,6 +2,13 @@ import prisma from '@/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { issueSchema } from '../../issueSchema';
 
+//get all issues from the db
+export async function GET(request: NextRequest) {
+  const issues = await prisma.issue.findMany();
+
+  return NextResponse.json({ issues: issues }, { status: 200 });
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const validation = issueSchema.safeParse(body);
