@@ -1,9 +1,8 @@
-import { Actions } from './actions';
+import { Issue } from '@prisma/client';
 import { Table } from '@radix-ui/themes';
 import axios from 'axios';
-import { Issue } from '@prisma/client';
-import StatusComponent from '../components/Status';
-import delay from 'delay';
+import { StatusComponent, Link } from '../components';
+import { Actions } from './actions';
 
 const Issues = async () => {
   const {
@@ -11,7 +10,7 @@ const Issues = async () => {
   } = await axios.get('http://localhost:3000/api/issues');
 
   return (
-    <div className='m-4'>
+    <div>
       <Actions />
       <Table.Root>
         <Table.Header>
@@ -31,7 +30,7 @@ const Issues = async () => {
             return (
               <Table.Row key={issue.id}>
                 <Table.RowHeaderCell>
-                  {issue.title}
+                  <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
                   <p className='mt-2 md:hidden'>
                     {<StatusComponent status={issue.status} />}
                   </p>

@@ -1,20 +1,21 @@
 'use client';
-import { Button, Text, TextField } from '@radix-ui/themes';
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import SimpleMDE from 'react-simplemde-editor';
-import 'easymde/dist/easymde.min.css';
-import { useForm, Controller } from 'react-hook-form';
+import {ErrorCallout, Loading} from '@/app/components';
 import { issueSchema } from '@/app/issueSchema';
-import { z } from 'zod';
-import axios from 'axios';
-import { useState } from 'react';
-import ErrorCallout from '@/app/components/ErrorCallout';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { Button, Text, TextField } from '@radix-ui/themes';
+import axios from 'axios';
+import 'easymde/dist/easymde.min.css';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import Loading from '@/app/components/Loading';
-import delay from 'delay';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 type IssueForm = z.infer<typeof issueSchema>;
+const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
+  ssr: false,
+});
 
 const NewIssue = async () => {
   const {
@@ -32,7 +33,7 @@ const NewIssue = async () => {
   const createNewIssue = async (data: IssueForm) => {
     setIsSubmitting(true);
     try {
-      await axios.post('/api/issue', data);
+      await axios.post('/api/issues', data);
       router.push('/issues');
     } catch (error) {
       setError('An error has happened!');
