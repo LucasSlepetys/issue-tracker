@@ -1,9 +1,12 @@
+import { EditIssueBtn } from './EditIssueBtn';
+import { IssueDescription } from './IssueDescription';
 import { StatusComponent } from '@/app/components';
 import { Box, Button, Card, Flex, Grid, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import Markdown from 'react-markdown';
 import { GET_ISSUE } from '../_axios/REQUESTS';
 import { notFound } from 'next/navigation';
+import DeleteIssueBtn from './DeleteIssueBtn';
 
 const issuePage = async ({ params: { id } }: { params: { id: string } }) => {
   const { issue, error } = await GET_ISSUE(id);
@@ -11,28 +14,23 @@ const issuePage = async ({ params: { id } }: { params: { id: string } }) => {
   if (error) {
     console.log(error);
     notFound();
+  } else {
   }
 
-  const dt = new Date(issue!.createdAt);
-
   return (
-    <Grid columns={{ initial: '1', md: '2' }} gap='4'>
-      <Box className='max-w-xl'>
-        <Text size={'7'}>{issue!.title}</Text>
-        <Flex gap={'4'} mb={'6'} mt={'2'}>
-          <StatusComponent status={issue!.status} />
-          <Text>{dt.toDateString()}</Text>
-        </Flex>
-        <Card>
-          <Markdown className='markdown'>{issue!.description}</Markdown>
-        </Card>
-      </Box>
-      <Box>
-        <Button>
-          <Link href={`/issues/${issue!.id}/edit`}>Edit Issue</Link>
-        </Button>
-      </Box>
-    </Grid>
+    issue && (
+      <Grid columns={{ initial: '1', md: '5' }} gap='4'>
+        <Box className='max-w-xl col-span-4'>
+          <IssueDescription issue={issue} />
+        </Box>
+        <Box>
+          <Flex direction='column' gap='4'>
+            <EditIssueBtn id={issue.id} />
+            <DeleteIssueBtn id={issue.id} />
+          </Flex>
+        </Box>
+      </Grid>
+    )
   );
 };
 
