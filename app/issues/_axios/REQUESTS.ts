@@ -31,3 +31,18 @@ export const GET_ISSUES = async (): Promise<IssuesResponse> => {
   }
 };
 
+interface DeleteIssueResponse {
+  issue: Issue | null;
+  error: string | null;
+}
+
+export const DEL_ISSUE = async (id: number): Promise<DeleteIssueResponse> => {
+  try {
+    const response = await axios.delete(`http://localhost:3000/api/issues/${id}`);
+    const issue: Issue = response.data.issue;
+    return { issue, error: null };
+  } catch (error) {
+    return { issue: null, error: `There has been an error: ${error}` };
+    
+  }
+}
