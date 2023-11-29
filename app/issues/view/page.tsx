@@ -1,8 +1,8 @@
 import { Issue } from '@prisma/client';
 import { Table } from '@radix-ui/themes';
-import { StatusComponent, Link } from '../components';
+import { StatusComponent, Link } from '../../components';
 import { Actions } from './actions';
-import { GET_ISSUES } from './_axios/REQUESTS';
+import { GET_ISSUES } from '../_axios/REQUESTS';
 
 const Issues = async () => {
   const { issues, error } = await GET_ISSUES();

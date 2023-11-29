@@ -1,26 +1,34 @@
 'use client';
 import { Button, Dialog, Flex } from '@radix-ui/themes';
-import React from 'react';
+import React, { useState } from 'react';
 import { DEL_ISSUE } from '../_axios/REQUESTS';
 import { useRouter } from 'next/navigation';
+import { Loading } from '@/app/components';
+import delay from 'delay';
 
 const DeleteIssueBtn = ({ id }: { id: number }) => {
   const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const deleteIssue = async () => {
+    setIsDeleting(true);
     try {
       await DEL_ISSUE(id);
-      router.push('/issues');
+      router.push('/issues/view');
       router.refresh();
+      setIsDeleting(false);
     } catch (error) {
       alert(error);
+      setIsDeleting(false);
     }
   };
 
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button color='red'>Delete Issue</Button>
+        <Button disabled={isDeleting} color='red'>
+          Delete Issue {isDeleting && <Loading />}
+        </Button>
       </Dialog.Trigger>
 
       <Dialog.Content style={{ maxWidth: 450 }}>

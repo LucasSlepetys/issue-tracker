@@ -49,7 +49,7 @@ const IssueForm = async ({ id }: Props) => {
       } else {
         await axios.post('http://localhost:3000/api/issues', data);
       }
-      router.push('/issues');
+      router.push('/issues/view');
       router.refresh();
     } catch (error) {
       setError('An error has happened!');

@@ -15,7 +15,7 @@ const NavBar = () => {
     },
     {
       name: 'Issues',
-      href: '/issues',
+      href: '/issues/view',
     },
   ];
 
