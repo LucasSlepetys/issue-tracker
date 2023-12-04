@@ -1,6 +1,6 @@
 import prisma from '@/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { issueSchema } from '@/app/issueSchema';
+import { issueSchema, updateIssueSchema } from '@/app/issueSchema';
 import delay from 'delay';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/AuthOptions';
@@ -32,16 +32,32 @@ export async function PATCH(request: NextRequest, { params: { id } }: Props) {
   //validate the user is authenticated:
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({}, { status: 401 });
+  //------
 
   const body = await request.json();
 
   //validate if request body is a valid request
-  const validation = issueSchema.safeParse(body);
+  const validation = updateIssueSchema.safeParse(body);
   if (!validation.success)
     return NextResponse.json(
       { error: validation.error.format() },
       { status: 400 }
     );
+
+  //check if assignedToUserId was given in the body and if user exits
+  const { title, description, assignedToUserId } = body;
+  if (assignedToUserId) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: assignedToUserId,
+      },
+    });
+    if (!user)
+      return NextResponse.json(
+        { error: 'User does not exist' },
+        { status: 400 }
+      );
+  }
 
   //check if issue exits given the id in the db
   const issue = await prisma.issue.findUnique({
@@ -62,8 +78,9 @@ export async function PATCH(request: NextRequest, { params: { id } }: Props) {
       id: parseInt(id),
     },
     data: {
-      title: body.title,
-      description: body.description,
+      title,
+      description,
+      assignedToUserId,
     },
   });
 
