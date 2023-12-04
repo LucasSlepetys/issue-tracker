@@ -2,6 +2,8 @@ import prisma from '@/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { issueSchema } from '@/app/issueSchema';
 import delay from 'delay';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/AuthOptions';
 
 interface Props {
   params: {
@@ -27,7 +29,12 @@ export async function GET(request: NextRequest, { params: { id } }: Props) {
 
 //edit an issue given a new title and description
 export async function PATCH(request: NextRequest, { params: { id } }: Props) {
+  //validate the user is authenticated:
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+
   const body = await request.json();
+
   //validate if request body is a valid request
   const validation = issueSchema.safeParse(body);
   if (!validation.success)
@@ -65,6 +72,10 @@ export async function PATCH(request: NextRequest, { params: { id } }: Props) {
 }
 
 export async function DELETE(request: NextRequest, { params: { id } }: Props) {
+  //validate the user is authenticated:
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+
   //check if issue exists in db
   const issue = await prisma.issue.findUnique({
     where: {

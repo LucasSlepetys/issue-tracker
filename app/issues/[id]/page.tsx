@@ -7,8 +7,12 @@ import Markdown from 'react-markdown';
 import { GET_ISSUE } from '../_axios/REQUESTS';
 import { notFound } from 'next/navigation';
 import DeleteIssueBtn from './DeleteIssueBtn';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/AuthOptions';
+import AssigneeUser from './AssigneeUser';
 
 const issuePage = async ({ params: { id } }: { params: { id: string } }) => {
+  const session = await getServerSession(authOptions);
   const { issue, error } = await GET_ISSUE(id);
 
   if (error) {
@@ -23,12 +27,15 @@ const issuePage = async ({ params: { id } }: { params: { id: string } }) => {
         <Box className='max-w-xl col-span-4'>
           <IssueDescription issue={issue} />
         </Box>
-        <Box>
-          <Flex direction='column' gap='4'>
-            <EditIssueBtn id={issue.id} />
-            <DeleteIssueBtn id={issue.id} />
-          </Flex>
-        </Box>
+        {session && (
+          <Box>
+            <Flex direction='column' gap='4'>
+              <AssigneeUser />
+              <EditIssueBtn id={issue.id} />
+              <DeleteIssueBtn id={issue.id} />
+            </Flex>
+          </Box>
+        )}
       </Grid>
     )
   );

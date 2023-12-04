@@ -5,6 +5,8 @@ import NavBar from './navbar/page';
 import '@radix-ui/themes/styles.css';
 import { Container, Theme } from '@radix-ui/themes';
 import './theme-config.css';
+import AuthProvider from './auth/Provider';
+import ReactQueryProvider from './ReactQueryProvider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -21,12 +23,16 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.variable}>
-        <Theme>
-          <NavBar />
-          <main className='m-8'>
-            <Container>{children}</Container>
-          </main>
-        </Theme>
+        <ReactQueryProvider>
+          <AuthProvider>
+            <Theme>
+              <NavBar />
+              <main className='m-8'>
+                <Container>{children}</Container>
+              </main>
+            </Theme>
+          </AuthProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

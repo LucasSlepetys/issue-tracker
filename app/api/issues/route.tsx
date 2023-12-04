@@ -1,6 +1,8 @@
 import prisma from '@/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { issueSchema } from '../../issueSchema';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/AuthOptions';
 
 //get all issues from the db
 export async function GET(request: NextRequest) {
@@ -10,6 +12,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  //validate the user is authenticated:
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+
   const body = await request.json();
   const validation = issueSchema.safeParse(body);
 
