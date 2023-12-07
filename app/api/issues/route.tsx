@@ -3,12 +3,58 @@ import { NextRequest, NextResponse } from 'next/server';
 import { issueSchema } from '../../issueSchema';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/AuthOptions';
+import { Status } from '@prisma/client';
+
+const validStatusFilter: Status[] = ['OPEN', 'CLOSED', 'IN_PROGRESS'];
 
 //get all issues from the db
 export async function GET(request: NextRequest) {
-  const issues = await prisma.issue.findMany();
+  //----------------------orderByStatusQueryParam------------------------
 
-  return NextResponse.json({ issues: issues }, { status: 200 });
+  const orderByStatusQueryParam =
+    request.nextUrl.searchParams.get('status') || '';
+
+  const orderByStatus: Status | undefined = validStatusFilter.includes(
+    orderByStatusQueryParam as Status
+  )
+    ? (orderByStatusQueryParam as Status)
+    : undefined;
+
+  //----------------------orderByAscOrDescQueryParam------------------------
+
+  const orderByAscOrDescQueryParam = request.nextUrl.searchParams.get('order');
+  const orderByAscOrDesc: 'asc' | 'desc' =
+    orderByAscOrDescQueryParam === 'asc' ||
+    orderByAscOrDescQueryParam === 'desc'
+      ? orderByAscOrDescQueryParam
+      : 'asc';
+
+  //----------------------orderByTitleOrCreateQueryParam------------------------
+
+  const orderByTitleOrCreateQueryParam =
+    request.nextUrl.searchParams.get('orderBy');
+
+  const orderByTitleOrCreate: 'title' | 'createdAt' | undefined =
+    orderByTitleOrCreateQueryParam === 'title' ||
+    orderByTitleOrCreateQueryParam === 'createdAt'
+      ? orderByTitleOrCreateQueryParam
+      : undefined;
+
+  const orderByObj = orderByTitleOrCreate
+    ? {
+        [orderByTitleOrCreate]: orderByAscOrDesc,
+      }
+    : undefined;
+
+  const issues = await prisma.issue.findMany({
+    where: {
+      status: orderByStatus,
+    },
+    orderBy: orderByObj,
+  });
+
+  // return NextResponse.json({ issues: issues }, { status: 200 });
+  return NextResponse.json({ issues }, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {
