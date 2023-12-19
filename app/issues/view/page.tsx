@@ -1,11 +1,16 @@
-import { Issue } from '@prisma/client';
+import { IssuesTable } from './IssuesTable';
+import { Issue, Status } from '@prisma/client';
 import { Table } from '@radix-ui/themes';
 import { StatusComponent, Link } from '../../components';
 import { Actions } from './actions';
-import { GET_ISSUES } from '../_axios/REQUESTS';
+import { GET_ISSUES, Params } from '../_axios/REQUESTS';
 
-const Issues = async () => {
-  const { issues, error } = await GET_ISSUES();
+interface SearchParams {
+  searchParams: Params;
+}
+
+const Issues = async ({ searchParams }: SearchParams) => {
+  const { issues, error } = await GET_ISSUES(searchParams);
 
   if (error) {
     console.log(error);
@@ -16,40 +21,7 @@ const Issues = async () => {
     issues && (
       <div>
         <Actions />
-        <Table.Root>
-          <Table.Header>
-            <Table.Row>
-              <Table.ColumnHeaderCell>Issue</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell className='hidden md:table-cell'>
-                Status
-              </Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell className='hidden md:table-cell'>
-                Created at
-              </Table.ColumnHeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {issues.map((issue: Issue) => {
-              const dt = new Date(issue.createdAt);
-              return (
-                <Table.Row key={issue.id}>
-                  <Table.RowHeaderCell>
-                    <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
-                    <p className='mt-2 md:hidden'>
-                      {<StatusComponent status={issue.status} />}
-                    </p>
-                  </Table.RowHeaderCell>
-                  <Table.Cell className='hidden md:table-cell'>
-                    <StatusComponent status={issue.status} />
-                  </Table.Cell>
-                  <Table.Cell className='hidden md:table-cell'>
-                    {dt.toDateString()}
-                  </Table.Cell>
-                </Table.Row>
-              );
-            })}
-          </Table.Body>
-        </Table.Root>
+        <IssuesTable issues={issues} />
       </div>
     )
   );
