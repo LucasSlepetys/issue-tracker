@@ -9,6 +9,13 @@ const validStatusFilter: Status[] = ['OPEN', 'CLOSED', 'IN_PROGRESS'];
 
 //get all issues from the db
 export async function GET(request: NextRequest) {
+  //----------------------page------------------------
+
+  const pageQueryParam = request.nextUrl.searchParams.get('page') || '1';
+  const page = parseInt(pageQueryParam);
+
+  const pageSize = 10; //10 items per page
+
   //----------------------orderByStatusQueryParam------------------------
 
   const orderByStatusQueryParam =
@@ -51,10 +58,18 @@ export async function GET(request: NextRequest) {
       status: orderByStatus,
     },
     orderBy: orderByObj,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const totalIssues = await prisma.issue.count({
+    where: {
+      status: orderByStatus,
+    },
   });
 
   // return NextResponse.json({ issues: issues }, { status: 200 });
-  return NextResponse.json({ issues }, { status: 200 });
+  return NextResponse.json({ issues, totalIssues }, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {
