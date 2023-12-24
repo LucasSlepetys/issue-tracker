@@ -9,6 +9,56 @@ const validStatusFilter: Status[] = ['OPEN', 'CLOSED', 'IN_PROGRESS'];
 
 //get all issues from the db
 export async function GET(request: NextRequest) {
+  //----------------------Issues summary------------------------
+  const summaryQueryParam =
+    request.nextUrl.searchParams.get('summary') || 'false';
+  const summary = summaryQueryParam === 'true' ? true : false;
+
+  if (summary) {
+    const openIssuesCount = await prisma.issue.count({
+      where: {
+        status: 'OPEN',
+      },
+    });
+
+    const inProgressIssuesCount = await prisma.issue.count({
+      where: {
+        status: 'IN_PROGRESS',
+      },
+    });
+
+    const closedIssuesCount = await prisma.issue.count({
+      where: {
+        status: 'CLOSED',
+      },
+    });
+
+    return NextResponse.json(
+      { openIssuesCount, inProgressIssuesCount, closedIssuesCount },
+      { status: 200 }
+    );
+  }
+
+  //----------------------latest issues------------------------
+
+  const latestQueryParam =
+    request.nextUrl.searchParams.get('latest') || 'false';
+  const latest = latestQueryParam === 'true' ? true : false;
+
+  if (latest) {
+    const latestIssues = await prisma.issue.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 5,
+      include: {
+        assignedToUser: true,
+      },
+    });
+
+    return NextResponse.json({ latestIssues }, { status: 200 });
+  }
+
   //----------------------page------------------------
 
   const pageQueryParam = request.nextUrl.searchParams.get('page') || '1';
