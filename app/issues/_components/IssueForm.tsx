@@ -59,9 +59,9 @@ const IssueForm = ({ id }: Props) => {
     setIsSubmitting(true);
     try {
       if (id) {
-        await axios.patch(`http://localhost:3000/api/issues/${id}`, data);
+        await axios.patch(`/api/issues/${id}`, data);
       } else {
-        await axios.post('http://localhost:3000/api/issues', data);
+        await axios.post('/api/issues', data);
       }
       router.push('/issues/view');
       router.refresh();
