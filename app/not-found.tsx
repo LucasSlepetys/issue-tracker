@@ -17,7 +17,7 @@ const NotFoundPage = () => {
       <div className='text-center mb-8'>
         <h1 className='text-4xl font-bold mb-2'>404 - Page Not Found</h1>
         <p className='text-lg'>
-          Oops! Looks like you've ventured into unknown territory.
+          Oops! Looks like youve ventured into unknown territory.
         </p>
       </div>
       <div className='flex space-x-4'>

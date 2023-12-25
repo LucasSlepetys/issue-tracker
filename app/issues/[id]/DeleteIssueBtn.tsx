@@ -34,7 +34,7 @@ const DeleteIssueBtn = ({ id }: { id: number }) => {
       <Dialog.Content style={{ maxWidth: 450 }}>
         <Dialog.Title>Confirm Deletion of Issue</Dialog.Title>
         <Dialog.Description size='2' mb='4'>
-          Are you sure you want to delete this issue? You won't be able to
+          Are you sure you want to delete this issue? You wont be able to
           restore it afterwards.
         </Dialog.Description>
 

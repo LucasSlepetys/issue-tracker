@@ -18,14 +18,14 @@ export function TableColumn({ text, orderByValue, className }: props) {
   const params = new URLSearchParams(searchParams);
   const searchParamsObject = Object.fromEntries(params.entries());
 
-  const orderBy = searchParamsObject?.orderBy;
+  const orderBy = searchParamsObject.orderBy;
 
   useEffect(() => {
     const order = searchParamsObject?.order;
     if (order) {
       setIsOrder(order === 'desc');
     }
-  }, []);
+  }, [searchParamsObject?.order]);
 
   const changeOrder = () => {
     setIsOrder(!isOrder);

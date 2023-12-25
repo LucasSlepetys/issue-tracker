@@ -1,10 +1,5 @@
-'use client';
-import Pagination from '@/app/components/Pagination';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Layout } from './Layout';
 import { GET_ISSUES, Params } from '../_axios/REQUESTS';
-import { IssuesTable } from './IssuesTable';
-import { Actions } from './actions';
-import { Flex } from '@radix-ui/themes';
 
 interface SearchParams {
   searchParams: Params;
@@ -20,17 +15,11 @@ const Issues = async ({ searchParams }: SearchParams) => {
 
   return (
     issues && (
-      <div>
-        <Actions />
-        <IssuesTable issues={issues} />
-        <Flex mt={'4'} justify={'center'}>
-          <Pagination
-            itemCount={totalIssues}
-            currentPage={parseInt(searchParams.page)}
-            pageSize={10}
-          />
-        </Flex>
-      </div>
+      <Layout
+        issues={issues}
+        totalIssues={totalIssues}
+        searchParams={searchParams}
+      />
     )
   );
 };

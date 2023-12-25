@@ -7,11 +7,12 @@ import { Button, Text, TextField } from '@radix-ui/themes';
 import axios from 'axios';
 import 'easymde/dist/easymde.min.css';
 import { notFound, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { GET_ISSUE } from '../_axios/REQUESTS';
 import SimpleMDE from 'react-simplemde-editor';
+import { Issue } from '@prisma/client';
 
 type IssueFormInterface = z.infer<typeof issueSchema>;
 
@@ -19,7 +20,7 @@ interface Props {
   id?: string;
 }
 
-const IssueForm = async ({ id }: Props) => {
+const IssueForm = ({ id }: Props) => {
   const {
     register,
     control,
@@ -30,16 +31,29 @@ const IssueForm = async ({ id }: Props) => {
   });
   const [error, setError] = useState<string>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [issue, setIssue] = useState<Issue | null>(null);
   const router = useRouter();
 
   //checks if id is given and if it is fetchs the issue with the given id
-  const { issue, error: err } = id
-    ? await GET_ISSUE(id)
-    : { issue: null, error: null };
-  if (err) {
-    console.log(err);
-    notFound();
-  }
+  useEffect(() => {
+    const fetchIssue = async () => {
+      if (id) {
+        try {
+          const response = await GET_ISSUE(id);
+          setIssue(response.issue);
+          if (response.error) {
+            console.log(response.error);
+            notFound();
+          }
+        } catch (err) {
+          console.error(err);
+          notFound();
+        }
+      }
+    };
+
+    fetchIssue();
+  }, [id]);
 
   const createOrEditISsue = async (data: IssueFormInterface) => {
     setIsSubmitting(true);
