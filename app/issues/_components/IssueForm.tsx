@@ -59,7 +59,7 @@ const IssueForm = ({ id }: Props) => {
     setIsSubmitting(true);
     try {
       if (id) {
-        await axios.patch(`/api/issues/${id}`, data);
+        await axios.patch(`${process.env.NEXTAUTH_URL}/api/issues/${id}`, data);
       } else {
         await axios.post('/api/issues', data);
       }

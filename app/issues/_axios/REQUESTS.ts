@@ -8,7 +8,7 @@ interface IssueResponse {
 
 export const GET_ISSUE = async (id: string): Promise<IssueResponse> => {
   try {
-    const response = await axios.get(`/api/issues/${id}`);
+    const response = await axios.get(`${process.env.NEXTAUTH_URL}/api/issues/${id}`);
     const issue: Issue = response.data.issue;
     return { issue, error: null };
   } catch (error) {
@@ -39,7 +39,7 @@ export const GET_ISSUES = async (params?: Params): Promise<IssuesResponse> => {
     if (page) queryParams.append('page', page);
 
     const url = `/api/issues${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-    const response = await axios.get(url);
+    const response = await axios.get(process.env.NEXTAUTH_URL+url);
     const issues: Issue[] = response.data.issues;
     const totalIssues: number = response.data.totalIssues;
     return { issues, error: null, totalIssues };
@@ -55,7 +55,7 @@ interface DeleteIssueResponse {
 
 export const DEL_ISSUE = async (id: number): Promise<DeleteIssueResponse> => {
   try {
-    const response = await axios.delete(`/api/issues/${id}`);
+    const response = await axios.delete(`${process.env.NEXTAUTH_URL}/api/issues/${id}`);
     const issue: Issue = response.data.issue;
     return { issue, error: null };
   } catch (error) {

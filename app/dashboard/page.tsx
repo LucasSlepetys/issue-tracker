@@ -1,16 +1,20 @@
-import React, { useEffect } from 'react';
-import Pagination from '../components/Pagination';
-import LatestIssues from './LatestIssues/LatestIssues';
-import IssuesSummaryComponent from './IssuesSummary/IssuesSummary';
+import React from 'react';
 
-const Dashboard = ({ searchParams }: { searchParams: { page: string } }) => {
-  //build separate hook for fetching issues summary
-  //add graphs using this hook
-  //put it all into the page
+import IssuesSummaryComponent from './_IssuesSummary/IssuesSummary';
+import IssueSummaryChart from './_IssueSummaryChart/IssueSummaryChart';
+import LatestIssues from './_LatestIssues/LatestIssues';
+import { Grid, Flex } from '@radix-ui/themes';
+
+const Dashboard = () => {
   return (
     <div>
-      {/* <LatestIssues /> */}
-      <IssuesSummaryComponent />
+      <Grid columns={{ initial: '1', md: '2' }} gap='5'>
+        <Flex direction='column' gap='5'>
+          <IssuesSummaryComponent />
+          <IssueSummaryChart />
+        </Flex>
+        <LatestIssues />
+      </Grid>
     </div>
   );
 };

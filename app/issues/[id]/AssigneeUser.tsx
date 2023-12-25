@@ -50,7 +50,10 @@ const AssigneeUser = ({ issue }: { issue: Issue }) => {
 const useUsers = () =>
   useQuery<User[]>({
     queryKey: ['users'],
-    queryFn: () => axios.get('/api/users').then((res) => res.data),
+    queryFn: () =>
+      axios
+        .get(process.env.NEXTAUTH_URL + '/api/users')
+        .then((res) => res.data),
     staleTime: 60 * 1000,
     retry: 3,
   });
